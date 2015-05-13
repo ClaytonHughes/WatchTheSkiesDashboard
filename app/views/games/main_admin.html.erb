@@ -1,0 +1,14 @@
+<h1>Fast edit</h1>
+
+<%= form_for @game, url: {action: "update"} do |f| %>
+  <div class="actions">
+    <%= f.label "Current Round" %> </br>
+    <%= f.number_field :round, :in => 0..12, :step => '1'%></br>
+    <%= f.label "Data" %> </br>
+    <%= f.text_area :data%></br>
+    <%= f.label "Next Round Time" %> </br>
+    <%= f.datetime_local_field :next_round, :ampm => true, :minute_step => 15 %>
+    <%= f.submit %>
+  </div>
+  <h4>Warning: This will cause game to unpause.</h4>
+<% end %>

@@ -5,6 +5,12 @@ class GamesController < ApplicationController
     @data = JSON.parse(@game.data)
   end
 
+  def main_admin
+    @game = Game.first()
+  end
+
+  def update
+  end
 
 private
   # method to make all internal checks to the game status
