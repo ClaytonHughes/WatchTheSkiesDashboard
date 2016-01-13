@@ -8,16 +8,30 @@ Dependencies are managed using Bundler.
 If you do not have Bundler:
   gem install bundler
 
+The above is probably supposed to do something, but it likely doesn't. I also had to do the following:
+
 Then run the following to start the application:
 
 - bundle install
+- Get postgres Running
+  - Create a postgres user
+  - Create a postgres db directory (usr/var/local/ps-wts, e.g.) and chown it to postgres
+  - initdb <that directory>
+    - run as the postgres user
 - rake db:setup
+  - be the postgres user
+  - shit will probably break. Find a better branch...
 - rails s
+  - This is broken too...
+  - No, wait, you have to do this NOT as postgres
+  - NO. FUCK.
+  - BE POSTGRES. CHOWN EVERYTHING.
 
-This will start the server.
+This will ^hopefully start the server.
 
 If you need to reset to seed after creating the database, run rake db:reset
 
 Other rake commands available via rake -T
 
 An important note:  This application is currently set to run off of one Game model instatiation.  It is set that way because eventually we will branch into multiple games running off the site for different users (ie. different Watch the Skies events in differing locations on the same day).  However, until the gameplay is a bit more stable (and we approach that volume), there's no immediate need to link up all the models under the Game structure until we tie a user to the game.  At that point, we will use a User to Game relationship and a Game to Other_Game_Models relationship to hook everything up.
+
