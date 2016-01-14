@@ -1,7 +1,7 @@
 /* =====================================
                 VARIABLES
    ===================================== */
-$background: #ffffe9;
+$background: #fffff4;
 $background-blue: #94b3c4;
 $background-seafoam: #d3e3d8;
 $background-darktan: #f0f5db;
@@ -53,24 +53,21 @@ $light-red: #FA3E3B;
 
 .centre-column {
   display: table-cell;
-  padding-right: 30px;
   vertical-align: top;
-  width: 50%;
+  width: 60%;
+  text-align: center;
 
   #round-container {
-    text-align: center;
-
-    h3.paused {
+    h2.paused {
       color: $red;
     }
   }
 }
 
 .right-column {
-  background-color: $background-seafoam;
   display: table-cell;
   vertical-align: top;
-  width: 25%;
+  width: 10%;
 }
 
 .column {
@@ -81,8 +78,6 @@ $light-red: #FA3E3B;
 
   img {
     display: block;
-    margin: 0 auto 10px;
-    width: 100%;
   }
 
   ul {
