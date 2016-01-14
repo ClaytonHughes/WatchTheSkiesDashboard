@@ -30,21 +30,11 @@
         <div id="terror-container">
           <h3>Terror</h3>
 
-          <div class="progress-wrapper">
-            <div class="progress-legend">{{terror}} / 250</div>
-            <div round-progress
-                max="250"
-                current="terror"
-                color="#9f0d33"
-                bgcolor="#399499"
-                radius="100"
-                stroke="20"
-                semi="false"
-                rounded="false"
-                clockwise="true"
-                responsive="false"
-                duration="800"
-                animation="easeInOutQuart"></div>
+          <div class="terror-tracker" ng-style="colorFromTerror(terror)">
+            <h1>GLOBAL PANIC</h1>
+            <div class="terror-value">
+              {{terror}}
+            </div>
           </div>
         </div>
       </div>
@@ -98,6 +88,6 @@
           <p class="Vatican">{{activity}}</p>
         </div>
       </div>
-    </div>
+    </div> <!-- right column -->
   </div>
 </div>

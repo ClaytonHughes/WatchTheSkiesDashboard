@@ -1,3 +1,53 @@
+const start_color = { h:100, s:50, v:60 }
+const end_color = { h:0, s:100, v:130 }
+
+function rgb_from_hsv(h, s, v) {
+    var r, g, b, i, f, p, q, t;
+    if (arguments.length === 1) {
+        s = Math.min(1,h.s/100), v = Math.min(1,h.v/100), h = Math.min(h.h/360);
+    }
+    i = Math.floor(h * 6);
+    f = h * 6 - i;
+    p = v * (1 - s);
+    q = v * (1 - f * s);
+    t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+    obj = {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+    };
+    return obj;
+}
+
+function css_rgb(r,g,b) {
+  if (arguments.length === 1) {
+    b = r.b;
+    g = r.g;
+    r = r.r;
+  }
+  return ['rgb(',r,',',g,',',b,')'].join('');
+}
+
+function lerp(a, b, alpha) {
+  return (1-alpha)*a + (alpha)*b;
+}
+
+function hsv_lerp(a,b,alpha) {
+  return {
+    h: lerp(a.h, b.h, alpha),
+    s: lerp(a.s, b.s, alpha),
+    v: lerp(a.s, b.s, alpha)
+  }
+}
+
 var dashboardApp = angular.module('dashboardApp', ['dashboardController']);
 
 var dashboardController = angular.module('dashboardController', ['timer', 'angular-svg-round-progress']);
@@ -73,6 +123,13 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
         range.push(i);
       }
       return range;
+    };
+
+    $scope.colorFromTerror = function(value) {
+      alpha = value / 250;
+      h_color = hsv_lerp(start_color, end_color, alpha);
+      r_color = rgb_from_hsv(h_color);
+      return { "background-color": css_rgb(r_color) };
     };
 
     $scope.getStatus();
