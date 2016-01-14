@@ -59,16 +59,20 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
       apiCall();
     };
 
-    $scope.updateNews = function(){
+    $scope.updateNews = function() {
       news_items = $('.news-container')
       news_items.first().hide('slow',function(){
           detach = news_items.first().detach()
           detach.insertAfter(news_items.last()).fadeIn('slow');
       });
-    }
+    };
 
-    $scope.range = function(n) {
-      return new Array(n);
+    $scope.range = function(count) {
+      range = []
+      for (var i=0; i<count; ++i) {
+        range.push(i);
+      }
+      return range;
     };
 
     $scope.getStatus();
@@ -82,3 +86,12 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
     }, 3000);
   }
 ]);
+
+// for use with range(), above.
+dashboardApp.filter('filterCount', function() {
+  return function(input) {
+    console.log('filtering... ');
+    console.log(input);
+    return input.filter(function(v) { console.log('filter for ' + v.toString()); return v < 9; });
+  };
+});
