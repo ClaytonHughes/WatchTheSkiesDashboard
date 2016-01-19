@@ -60,6 +60,12 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
     var apiCall = function() {
       $http.get('/api/dashboard_data').
       success(function(data, status, headers, config) {
+
+        if(status !== '200' && data['status'] !== 200) {
+          console.error("Got bad Status from /api/dashboard_data: " + status + " (" + data['status'] + ")" + "\n" + data['message']);
+          return
+        }
+
         var result = data['result'];
         $scope.terror = result['global_terror']['total'];
         $scope.activity = result['global_terror']['activity'];
@@ -147,8 +153,6 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
 // for use with range(), above.
 dashboardApp.filter('filterCount', function() {
   return function(input) {
-    console.log('filtering... ');
-    console.log(input);
     return input.filter(function(v) { console.log('filter for ' + v.toString()); return v < 9; });
   };
 });
