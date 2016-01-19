@@ -66,12 +66,9 @@ before_action :authenticate_user!, except:[:dashboard]
     end
   end
 
-
-  # Administrative stuff for Kevin
+  # Administrative panel
   def admin_control
     @game = Game.last
-    @time = @game.next_round
-    @time_zone = Time.zone.name
     render 'admin'
   end
 
@@ -94,6 +91,11 @@ before_action :authenticate_user!, except:[:dashboard]
   def update_round
     @game = Game.last
     @game.round = params[:game][:round]
+
+    data = @game.data
+    data['seconds'] = 0
+    data['minutes'] = 30
+
     @game.save
     redirect_to admin_control_path
   end
@@ -115,12 +117,11 @@ before_action :authenticate_user!, except:[:dashboard]
   # Post
   def toggle_game_status
     @game = Game.last
+    @game.last_time = Time.now() # help delta-T calculation not explode
     data = @game.data
-    # if game is not paused, then add 5 to clock
-    unless data['paused']
-      @game.next_round = @game.next_round + 5 * 60
-    end
+
     data['paused'] = !data['paused']
+ 
     @game.data = data
     @game.save
     redirect_to admin_control_path
@@ -139,22 +140,25 @@ before_action :authenticate_user!, except:[:dashboard]
   # Patch
   def increment_time
     @game = Game.last
+ 
     data = @game.data
-    data['vatican_alien_comms'] = !data['vatican_alien_comms']
-    @game.data = data
-    @game.save
-    redirect_to admin_control_path
-  end
 
-  # Post
-  def update_time
-    @game = Game.find(params[:id])
-    dateObj = params["game"]
-    # Assumes local server time is the time and then converts to utc
-    datetime = Time.zone.local(dateObj["next_round(1i)"].to_i, dateObj["next_round(2i)"].to_i, 
-                        dateObj["next_round(3i)"].to_i, dateObj["next_round(4i)"].to_i,
-                        dateObj["next_round(5i)"].to_i).utc()
-    @game.next_round = datetime
+    second_adjust = params[:game][:seconds].to_f
+    minute_adjust = params[:game][:minutes].to_i
+
+    # user probably intends negative time if minutes is negative:
+    if minute_adjust < 0 and 0 < second_adjust
+      second_adjust *= -1
+    end
+
+    data['seconds'] += second_adjust
+    # adjust minutes up/down based on seconds
+    minute_adjust += (data['seconds'] / 60.0).floor
+    data['seconds'] %= 60
+
+    data['minutes'] += minute_adjust
+
+    @game.data = data
     @game.save
     redirect_to admin_control_path
   end

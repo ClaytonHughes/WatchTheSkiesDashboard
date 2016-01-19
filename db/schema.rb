@@ -19,13 +19,11 @@ ActiveRecord::Schema.define(version: 20151206205506) do
   create_table "games", force: :cascade do |t|
     t.string   "name"
     t.integer  "round"
-    t.boolean  "alien_comm"
+    t.datetime "last_time"
     t.json     "data"
-    t.datetime "next_round"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "control_message"
-    t.string   "activity"
   end
 
   create_table "incomes", force: :cascade do |t|

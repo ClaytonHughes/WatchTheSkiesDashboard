@@ -7,15 +7,16 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 g = Game.create(
-  name: "Watch the Skies Test",
-  round: 0,
-  control_message: "Welcome",
-  activity: "All is quiet around the world.",
-  alien_comm: false,
-  next_round: (Time.now() + 30*60),
+  name: "Watch the Skies! Seattle",
+  round: 1,
+  control_message: "Welcome to Watch the Skies!",
+  last_time: Time.now(),
   data: {
     rioters: 0,
     paused: true,
+    alien_comms: false,
+    minutes: 45,
+    seconds: 0
     }
 )
 

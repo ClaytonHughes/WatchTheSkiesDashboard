@@ -1,20 +1,39 @@
 <div id="admin">
   <h1>Administrative Controls</h1>
 
-  <h3>Game Controls</h3>
+  <h3>Dashboard Controls</h3>
   <section>
     <ul>
       <li>
-        <b>Update Control's message to players:</b>
         <%= form_for(@game, url: alert_update_path) do |f|%>
-          Next Round:
           <%= f.label "Update Message" %> </br>
           <%= f.text_field :control_message, value: @game.control_message, :size => "60x5"%>
-          <%= f.submit %>
+          <%= f.submit "Set Message" %>
         <% end %>
       </li>
       <li>
-        Pause/Unpause Game
+        Toggle Alien View
+        <%= link_to toggle_alien_comms_path, method: :post, :class => "button-input" do %>
+          <% if @game.data['alien_comms'] %>
+            <i class="glyphicon glyphicon-stop"></i>
+          <% else %>
+            <i class="glyphicon glyphicon-play"></i>
+          <% end %>
+        <% end %>
+      </li>
+    </ul>
+  </section>
+
+  <h3>Time Controls</h3>
+  <section>
+    <ul>
+      <li>
+        <% if @game.data['paused'] %>
+          <b>CONTINUE</b>
+        <% else %>
+          <b>PAUSE</b>
+        <% end %>
+        Game
         <%= link_to toggle_game_status_path, method: :post, :class => "button-input" do %>
           <% if @game.data['paused']==true %>
             <i class="glyphicon glyphicon-play"></i>
@@ -24,61 +43,21 @@
         <% end %>
       </li>
       <li>
-        Toggle Alien Comms
-        <%= link_to toggle_alien_comms_path, method: :post, :class => "button-input" do %>
-          <% if @game.data['alien_comms'] %>
-            <i class="glyphicon glyphicon-pause"></i>
-          <% else %>
-            <i class="glyphicon glyphicon-play"></i>
-          <% end %>
+        Round Time Left: <%= '%02.f' % @game.data['minutes'] %>:<%= '%02.f' % @game.data['seconds'] %>
+        <%= form_for(@game, url: increment_time_path) do |f|%>
+          <%= f.label "Add Time (minutes : seconds)" %>
+          <%= f.number_field :minutes, value: 5, :in => -30..30, :step => '1'%>
+          <%= f.number_field :seconds, value: 0, :in => -59..59, :step => '1'%>
+          <%= f.submit "Add Time" %>
         <% end %>
-      </li>
-      <li>
-        Toggle Vatican Comms
-        <%= link_to toggle_vatican_comms_path, method: :post, :class => "button-input" do %>
-          <% if @game.data['vatican_alien_comms'] %>
-            <i class="glyphicon glyphicon-pause"></i>
-          <% else %>
-            <i class="glyphicon glyphicon-play"></i>
-          <% end %>
-        <% end %>
-      </li>
-    </ul>
-  </section>
-
-  <h3>Advanced Controls</h3>
-  <section>
-    <ul>
-      <li><p>Current time is: <%= @time %></p>
-        <%= form_for(@game, url: update_time_path(@game)) do |f|%>
-          <%= Time.use_zone(@time_zone) do %>
-          <%= f.datetime_select(:next_round, :ampm => true) %>
-          <% end %>
-
-          <%= f.submit %>
-        <% end %>
-      </li>
-      <li>
-        Game is currently
-        <% if @game.data['paused'] %>
-          <b>paused.</b>
-        <% else %>
-          <b>unpaused.</b>
-        <% end %>
-        <p>
-          If you pause the game. 5 minutes automatically is added to the
-          clock. Please manually update the clock if you need more time
-          otherwise the round will switch to the next one if you unpause 5
-          minutes later.
-        </p>
       </li>
       <li>
         <b>Set Round</b>
         <p>Current round is <%= @game.round %></p>
         <%= form_for(@game, url: round_update_path) do |f|%>
-            <%= f.label "Update Round" %>
+            <%= f.label "Round" %>
             <%= f.number_field :round, value: @game.round, :in => 0..15, :step => '1'%>
-          <%= f.submit %>
+          <%= f.submit "Update Round" %>
         <% end %>
       </li>
     </ul>
@@ -87,10 +66,10 @@
   <h3>Reset</h3>
   <section>
     <b>Warning:</b>
-    <p>The following button wipes <em>all</em> the game data.</p>
+    <p>The following button wipes <strong>all</strong> the game data.</p>
     <p>It will also may take a little bit of time to run. (Several seconds)</p>
     <%= form_tag reset_game_path, :method => 'post' do %>
-      <%= submit_tag "Reset Game" %>
+      <%= submit_tag "Reset Game" , :onClick => "return confirm('DESTROY EVERYTHING?');" %>
     <% end %>
   </section>
 </div>

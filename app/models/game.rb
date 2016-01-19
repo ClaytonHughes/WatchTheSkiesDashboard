@@ -1,40 +1,50 @@
 class Game < ActiveRecord::Base
   serialize :game_data, JSON
-  COUNTRIES = ['Brazil', 'China', 'France', 'India', 'Japan', 'Russian Federation','United Kingdom', 'USA']
+  COUNTRIES = ['Brazil', 'China', 'France', 'Germany', 'India', 'Japan', 'Russia', 'United Kingdom', 'USA']
+ 
   def reset()
     self.name = ""
     self.round = 0
-    self.next_round = Time.now() + 30*60
-    self.control_message = "Welcome to Watch the Skies"
-    self.activity = "All is quiet around the world."
+    self.last_time = Time.now()
+    self.control_message = "Welcome to Watch the Skies!"
+    self.alien_comm = false
     game_data = {}
     game_data['rioters']=0
     game_data['paused']=true
     game_data['alien_comms']=false
+    game_data['minutes']=_seconds_from_minutes(45)
+    game_data['seconds']=0
     self.data = game_data
     self.save()
   end
 
   def update()
-    # If the round isn't paused, check if it is time for the next round
-    # Can't have more than 12 rounds.
-    if self.round > 13
-      self.data['paused'] = true
-      self.save()
-    end
-    # Update round # and next round time if necessary
-    unless self.data['paused']
-      if self.next_round.utc() < Time.now.utc()
-        #First update the income levels
-        update_income_levels()
+    # real-world time since update last called
+    now = Time.now()
+    time_delta_s = now - self.last_time
+    puts time_delta_s
+    self.last_time = now
+ 
+    return _update(time_delta_s)
+  end
 
-        # Change the round
-        puts "Round is changing from #{self.round} to #{self.round+1}"
-        self.round +=1
-        self.next_round = self.next_round + (30*60)
-        self.save
+  def _next_round()
+    puts "Round is changing from #{self.round} to #{self.round+1}"
+    self.round +=1
+  end
+
+  private
+
+  def _update(time_delta_s)
+    if not self.data['paused']
+      time_left = _get_time_left() - time_delta_s
+      if time_left < 0
+        _next_round()
+        time_left = _seconds_from_minutes(30)
       end
+      _set_time_left(time_left)
     end
+    self.save()
     return self
   end
 
@@ -59,4 +69,22 @@ class Game < ActiveRecord::Base
       income.save()
     end
   end
+
+  def _get_time_left()
+    mins = self.data['minutes']
+    secs = self.data['seconds']
+    return secs + _seconds_from_minutes(mins)
+  end
+
+  def _set_time_left(seconds)
+    minutes = (seconds / 60.0).floor
+    seconds = seconds % 60
+    self.data['minutes'] = minutes
+    self.data['seconds'] = seconds
+  end
+
+  def _seconds_from_minutes(minutes)
+    return minutes * 60
+  end
+
 end
