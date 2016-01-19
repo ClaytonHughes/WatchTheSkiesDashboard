@@ -10,13 +10,6 @@ Rails.application.routes.draw do
 
   resources :incomes
 
-  resources :tweets do 
-    patch 'toggle_public', to: 'tweets#toggle_public', as: :toggle_public
-  end
-  post 'import_tweets', to: 'tweets#import_tweets', as: :import_tweets
-  post 'publicize_all_tweets', to: 'tweets#publicize_all_tweets', as: :publicize_all_tweets
-
-  post 'export_tweets', to: 'tweets#export_tweets', as: :export_tweets
   post 'hide_all_media', to: 'news_messages#hide_all_media', as: :hide_all_media
 
 
@@ -28,7 +21,6 @@ Rails.application.routes.draw do
   resources :news_messages
   patch 'toggle_paper_content/:news_id', to: 'news_messages#toggle_paper_content', as: :toggle_paper_content
   patch 'toggle_paper_media/:news_id', to: 'news_messages#toggle_paper_media', as: :toggle_paper_media
-  post 'direct_twitter_post', to: 'news_messages#direct_twitter_post', as: :direct_twitter_post
 
   get 'paper/:round' => 'news_messages#paper', as: :paper
 

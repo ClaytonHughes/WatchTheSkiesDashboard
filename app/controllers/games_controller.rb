@@ -102,7 +102,6 @@ before_action :authenticate_user!, except:[:dashboard]
   def reset
     Game.last.reset
     g = Game.last
-    Tweet.delete_all
     NewsMessage.delete_all
     PublicRelation.delete_all
     TerrorTracker.delete_all
@@ -137,7 +136,8 @@ before_action :authenticate_user!, except:[:dashboard]
     redirect_to admin_control_path
   end
 
-  def toggle_vatican_comms
+  # Patch
+  def increment_time
     @game = Game.last
     data = @game.data
     data['vatican_alien_comms'] = !data['vatican_alien_comms']

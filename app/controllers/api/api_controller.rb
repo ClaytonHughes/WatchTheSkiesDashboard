@@ -5,7 +5,6 @@ class Api::ApiController < ApplicationController
     @data = @game.data
     begin
       @global_terror = {
-        'activity' => Game.last().activity,
         'total'=> TerrorTracker.totalTerror(),
         'rioters'=> @data['rioters']
       }
@@ -62,7 +61,6 @@ class Api::ApiController < ApplicationController
         "global_terror" => @global_terror,
         "countries" => @countries_data,
         "alien_comms" => @data["alien_comms"],
-        "vatican_alien_comms" => @data["vatican_alien_comms"]
       }
     rescue
       @status = 500
