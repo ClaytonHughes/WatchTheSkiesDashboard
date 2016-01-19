@@ -153,6 +153,6 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
 // for use with range(), above.
 dashboardApp.filter('filterCount', function() {
   return function(input) {
-    return input.filter(function(v) { console.log('filter for ' + v.toString()); return v < 9; });
+    return input.filter(function(v) { return v < 9; });
   };
 });
