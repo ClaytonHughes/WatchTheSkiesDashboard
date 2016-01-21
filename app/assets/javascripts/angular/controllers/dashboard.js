@@ -63,7 +63,7 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
 
         if(status !== '200' && data['status'] !== 200) {
           console.error("Got bad Status from /api/dashboard_data: " + status + " (" + data['status'] + ")" + "\n" + data['message']);
-          return
+          return;
         }
 
         var result = data['result'];
@@ -82,12 +82,6 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
           $("body").removeClass("alien");
           $("p").removeClass("alien");
           $("td").removeClass("alien");
-        }
-        if (result['vatican_alien_comms'] == true) {
-          $('.Vatican').addClass('alien');
-
-        } else {
-          $(".Vatican").removeClass("alien");
         }
         if (result['news'].length > 0){
           var newDate = (new Date(result['news'][0]['created_at']));
