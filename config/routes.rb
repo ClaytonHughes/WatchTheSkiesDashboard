@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   # Api related routing
   namespace :api, :defaults => {:format => :json} do
     get 'dashboard_data' => 'api#dashboard'
+    get 'clock' => 'api#clock'
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

@@ -35,7 +35,7 @@ class Api::ApiController < ApplicationController
 
       unless previous_income_list.empty?
         previous_income_list.each do |pair|
-          countries_calculations[pair[0]] -= pair[1]
+        #  countries_calculations[pair[0]] -= pair[1]
         end
       end
 
@@ -43,9 +43,9 @@ class Api::ApiController < ApplicationController
         @countries_data[country] = (amount >= 0)
       end
 
-    rescue
+    rescue Exception => e
       @status = 500
-      @message = "Failure to generate countries"
+      @message = "Failure to generate countries: " + e.to_s
     end
 
     begin
@@ -53,10 +53,11 @@ class Api::ApiController < ApplicationController
       @result = {
         "timer" => {
           "round"=>  round,
-          #"next_round" =>  @game.next_round.in_time_zone(Time.zone.name),
+          "minutes" => @data['minutes'],
+          "seconds" => @data['seconds'],
           "paused" => @data['paused'],
-          "control_message" => @game.control_message
         },
+        "control_message" => @game.control_message,
         "news" =>  @news,
         "global_terror" => @global_terror,
         "countries" => @countries_data,
@@ -67,10 +68,37 @@ class Api::ApiController < ApplicationController
       @message = "Failure to generate overall results."
     end
 
+    package_reply
+  end
+
+  def clock
+    @game = Game.last().update
+    @data = @game.data
+    begin
+      #generate overall embedded result
+      @result = {
+        "timer" => {
+          "round"=>  @game.round,
+          "minutes" => @data['minutes'],
+          "seconds" => @data['seconds'],
+          "paused" => @data['paused']
+        }
+      }
+    rescue
+      @status = 500
+      @message = "Failure to generate timer results."
+    end
+
+    package_reply
+  end
+
+  private
+
+  def package_reply
+
     # if we haven't set a message, we sucessfully made stuff
     unless @message
       @status = 200
-      @message = "Success!"
     end
 
     @response = {
@@ -84,7 +112,4 @@ class Api::ApiController < ApplicationController
       format.json { render :json => @response }
     end
   end
-
-  private
-
 end

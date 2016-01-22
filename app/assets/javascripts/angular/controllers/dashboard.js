@@ -57,6 +57,20 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
     $scope.nextRound = new moment();
     $scope.news = [];
 
+    var clockCall = function() {
+      $http.get('/api/clock').
+      success(function(data, status, headers, config) {
+        if(status !== '200' && data['status'] !== 200) {
+          console.error("Got bad Status from /api/clock: " + status + " (" + data['status'] + ")" + "\n" + data['message']);
+          return;
+        }
+
+        var result = data['result'];
+        $scope.minutes = result['timer']['minutes'];
+        $scope.seconds = result['timer']['seconds'];
+      });
+    };
+
     var apiCall = function() {
       $http.get('/api/dashboard_data').
       success(function(data, status, headers, config) {
@@ -71,9 +85,12 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
         $scope.activity = result['global_terror']['activity'];
         $scope.paused = result['timer']['paused'];
         $scope.countries = result['countries'];
-        $scope.controlMessage = result['timer']['control_message'];
+        $scope.controlMessage = result['control_message'];
         $scope.round = result['timer']['round'];
         $scope.rioters = result['global_terror']['rioters'];
+        $scope.minutes = result['timer']['minutes'];
+        $scope.seconds = result['timer']['seconds'];
+
         if (result['alien_comms'] == true) {
           $("body").addClass("alien");
           $("p").addClass("alien");
@@ -117,6 +134,10 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
       });
     };
 
+    $scope.updateClock = function() {
+      clockCall();
+    };
+
     $scope.range = function(count) {
       range = []
       for (var i=0; i<count; ++i) {
@@ -141,6 +162,12 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
     $interval(function() {
       $scope.getStatus();
     }, 3000);
+
+    // TODO: Cancel when paused?
+    $interval(function() {
+      $scope.updateClock();
+    }, 240);
+ 
   }
 ]);
 
@@ -148,5 +175,23 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
 dashboardApp.filter('filterCount', function() {
   return function(input) {
     return input.filter(function(v) { return v < 9; });
+  };
+});
+
+// this should be built in, wtf
+dashboardApp.filter('fixedLen', function() {
+  return function (n, len) {
+    console.log(n)
+    console.log(len)
+    var num = parseInt(n, 10);
+    len = parseInt(len, 10);
+    if (isNaN(num) || isNaN(len)) {
+        return n;
+    }
+    num = ''+num;
+    while (num.length < len) {
+        num = '0'+num;
+    }
+    return num;
   };
 });

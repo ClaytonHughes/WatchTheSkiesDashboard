@@ -1,7 +1,7 @@
 <div id="admin">
-  <h1>Listing Terror Tracker Entry</h1>
+  <h1>Terror Entry // Current Total: <%= @tcount %></h1>
 
-  <h3>Enter New Terror Tracker Event</h3>
+  <h3>Terror Event</h3>
   <section>
     <%= form_for(@terror_tracker) do |f| %>
       <% if @terror_tracker.errors.any? %>
@@ -18,14 +18,14 @@
 
       <div class="actions">
         <%= f.label :description %> </br>
-        <%= f.text_area :description, :size => "100x2"%></br>
+        <%= f.text_area :description, :size => "50x3"%></br>
         <%= f.label :values do %>
           <%= f.label :round%>
           <%= f.number_field :round, :in => 0..12, :step => '1', :value=> @current_round%> <br />
           <%= f.label :amount %>
-          <%= f.number_field :amount, :in => -100..100, :step => '1' %>
+          <%= f.number_field :amount, :in => -250..250, :step => '1' %>
         <% end %>
-        <%= f.submit %>
+        <%= f.submit "Add Terror Event"%>
       </div>
      <% end %>
   </section>
@@ -35,11 +35,11 @@
     <%= form_for(@game, url: rioters_update_path) do |f|%>
       <%= f.label "Rioters:" %> </br>
       <%= f.number_field :rioters, value: @game.data['rioters'], :size => "60x5"%>
-      <%= f.submit %>
+      <%= f.submit "Update Rioter Count" %>
     <% end %>
   </section>
 
-  <h3>Total Terror: <%= @count %></h3>
+  <h3>Terror Log (Total <%= @tcount %>)</h3>
   <section>
      <table class="unpr">
       <thead>
@@ -62,7 +62,7 @@
             <td><%= terror_tracker.description %></td>
             <td><%= link_to 'Details', terror_tracker, :class => "button-input" %></td>
             <td><%= link_to 'Edit', edit_terror_tracker_path(terror_tracker), :class => "button-input" %></td>
-            <td><%= link_to 'Destroy', terror_tracker, method: :delete, :class => "button-input", data: { confirm: 'Are you sure?' } %></td>
+            <td><%= link_to 'Destroy', terror_tracker, method: :delete, :class => "button-input" %></td>
           </tr>
         <% end %>
       </tbody>

@@ -11,11 +11,9 @@
     </div>
     <div class="centre-column">
       <div id="round-container">
-        <h1 ng-if="!paused">
-          <timer countdown="roundDuration" max-time-unit="'minute'" interval="1000">{{mminutes}}:{{sseconds}}</timer>
+        <h1>
+          {{minutes | fixedLen: 2}}:{{seconds | fixedLen:2}}
         </h1>
-
-        <!-- This needs to be formatted for use -->
 
         <h1>Turn {{round}}</h1>
         <h2 class="paused" ng-if="paused">(Paused)</h2>
