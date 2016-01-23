@@ -5,7 +5,7 @@
   <section>
     <ul>
       <li>
-        <%= form_for(@game, url: alert_update_path) do |f|%>
+        <%= form_for alert_update_path do |f|%>
           <%= f.label "Update Message" %> </br>
           <%= f.text_field :control_message, value: @game.control_message, :size => "60x5"%>
           <%= f.submit "Set Message" %>

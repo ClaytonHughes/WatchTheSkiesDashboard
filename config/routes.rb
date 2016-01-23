@@ -31,8 +31,9 @@ Rails.application.routes.draw do
   get 'un_dashboard' => 'public_relations#un_dashboard', as: :un_dashboard
   post 'un_dashboard' => 'public_relations#create_un_dashboard'
   get '/country_status/:country', to: 'public_relations#country_status', as: :country_pr_status
+  post 'set_economy' => 'games#set_nation_economy', as: :set_economy
+  post 'human_control' => 'games#set_alliance', as: :alliance_update
   get 'human_control' => 'games#human_control', as: :human_control
-  post 'human_control' => 'games#create_human_pr'
   post 'messages/new' => 'messages#create'
   
   patch '/activity_update' => 'terror_trackers#update_activity', as: :activity_update

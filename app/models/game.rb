@@ -1,6 +1,6 @@
 class Game < ActiveRecord::Base
   serialize :game_data, JSON
-  COUNTRIES = ['Brazil', 'China', 'France', 'India', 'Japan', 'Russian Federation', 'United Kingdom', 'USA']
+  COUNTRIES = ['BR', 'CN', 'DE', 'FR', 'IN', 'JP', 'RU', 'UK', 'US']
  
   def reset()
     self.name = ""
@@ -14,6 +14,8 @@ class Game < ActiveRecord::Base
     game_data['alien_comms']=false
     game_data['minutes']=_seconds_from_minutes(45)
     game_data['seconds']=0
+    game_data['alliances']={}
+    game_data['economy']={}
     self.data = game_data
     self.save()
   end
@@ -46,28 +48,6 @@ class Game < ActiveRecord::Base
     end
     self.save()
     return self
-  end
-
-  def update_income_levels()
-    round = self.round
-    # PR > 4, change Income +1
-    # PR < -1 and PR < -3, change Income -1
-    # PR < -3, change Income -2
-    Game::COUNTRIES.each do |country|
-      pr = PublicRelation.where(round: round).where(country: country).sum(:pr_amount)
-      next_income = Income.where(round: round, team_name: country)[0].amount
-
-      if pr >= 4
-        next_income += 1
-      elsif pr <=-1 and pr >=-3
-        next_income += -1
-      elsif pr < -3
-        next_income += -2
-      end
-      income = Income.find_or_create_by(round: Game.last.round + 1, team_name: country)
-      income.amount = next_income
-      income.save()
-    end
   end
 
   def _get_time_left()

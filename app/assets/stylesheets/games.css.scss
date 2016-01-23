@@ -41,26 +41,26 @@ $light-red: #FA3E3B;
 
 .left-column {
   display: table-cell;
-  padding-right: 30px;
   vertical-align: top;
-  width: 25%;
-
-  #mgs-logo {
-    display: block;
-    margin: 0px auto 30px;
-  }
+  width: 30%;
 }
+
+#mgs-logo {
+  display: block;
+  margin: 0px auto 30px;
+}
+
 
 .centre-column {
   display: table-cell;
   vertical-align: top;
-  width: 60%;
+  width: 55%;
   text-align: center;
+}
 
-  #round-container {
-    h2.paused {
-      color: $red;
-    }
+#round-container {
+  h2.paused {
+    color: $red;
   }
 }
 
@@ -138,20 +138,50 @@ $light-red: #FA3E3B;
 
 .terror-tracker {
   text-align: center;
-  vertical-align: middle;
-  font-weight: bold;
-  font-size: 16rem;
   background-color: #faa;
-  padding: 100px;
+  padding: 8rem 2rem;
   width: 100%;
-  height: 600px;
   border-width: 1px;
   border-color: green;
   border-style: solid;
 }
 
 .terror-value {
-  padding-top: 100px;
+  margin-top: 6rem;
+  font-weight: bold;
+  font-size: 10rem;
+  line-height: 1.4;
+}
+
+/* You can alter this CSS in order to give Smooth Div Scroll your own look'n'feel */
+/* The scroll wrapper is always the same width and height as the containing element (div).
+   Overflow is hidden because you don't want to show all of the scrollable area.
+*/
+  
+  #scrollingText div.scrollableArea p
+  {
+    display: block;
+    float: left;
+    margin: 0;
+    padding-right: 20px;
+    white-space: nowrap;
+  }
+  
+  
+
+div.scrollWrapper
+{
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+div.scrollableArea
+{
+  position: relative;
+  width: auto;
+  height: 100%;
 }
 
 /* =====================================

@@ -11,41 +11,26 @@ class PublicRelationsController < ApplicationController
   # Post
   # Adds PR for un dashboard
   def create_un_dashboard
-    data = params['un_public_relations']
-    round = data['round']
-    main_values_exist = (data['main_description'] != '' or data['main_pr_amount'] != '')
-    results = []
-    data['countries'].each do|country_name, country_data|
-      if (!main_values_exist and country_data['description'] == '' and country_data['pr_amount'] == '')
-        next
-      end
-      pr = PublicRelation.new
-      pr.country = country_name
-      pr.round = round
-      if country_data['description'] == ''
-        pr.description = data['main_description']
-      else
-        pr.description = country_data['description']
-      end
-      if country_data['pr_amount'] == ''
-        pr.pr_amount = data['main_pr_amount']
-      else
-        pr.pr_amount = country_data['pr_amount']
-      end
-
-      if pr.pr_amount.nil?
-        pr.pr_amount = 0
-      end
-
-      if pr.pr_amount >0
-        pr.source = "UN Bonus"
-      else
-        pr.source = "UN Crisis"
-      end
-      pr.save
-      results.push(pr)
+    @game = Game.last
+    input = params['un_public_relations']
+    data = @game.data
+    if data['economy'].blank?
+      data['economy'] = {}
     end
-    redirect_to un_dashboard_path
+    econ = data['economy']
+
+    input['countries'].each do|country_name, country_data|
+      amt = country_data["economy_amount"].to_i
+      if not econ.has_key?(country_name)
+        econ[country_name] = {current: amt, change: 0}
+      else
+        last = econ[country_name]
+        econ[country_name] = {current: amt, change: amt - last["current"]}
+      end
+    end
+
+    @game.save
+    redirect_to un_dashboard_url
   end
 
   # Get

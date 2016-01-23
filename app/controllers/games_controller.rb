@@ -9,6 +9,7 @@ before_action :authenticate_user!, except:[:dashboard]
 
   # Human Control dashboard to quickly see PR's
   def human_control
+    @game = Game.last.update
     @last_round = (Game.last.round) -1
     
     @pr_amounts = PublicRelation.where(round: @last_round).group(:country).sum(:pr_amount)
@@ -31,7 +32,7 @@ before_action :authenticate_user!, except:[:dashboard]
     end
   end
 
-  def create_human_pr
+  def human_pr
     data = params['human_bulk_pr']
     round = data['round']
     main_values_exist = (data['main_description'] != '' or data['main_pr_amount'] != '')
@@ -65,6 +66,37 @@ before_action :authenticate_user!, except:[:dashboard]
     respond_to do |format|
       format.html{redirect_to human_control_path, notice: "Entered in #{results.length} for Round: #{round}."}
     end
+  end
+
+  def set_nation_economy
+    data = params['economy']
+  end
+
+  def set_alliance
+    @game = Game.last
+    data = @game.data
+    data['alliances'] = nil
+    if data['alliances'].blank?
+      data['alliances'] = {}
+      data['alliances'][['BR','FR']] = 'WAR'
+    end
+    p = params["/human_control"] # oh god help me
+
+    nation_pair = [p[:nation_a], p[:nation_b]].sort
+    key = nation_pair[0]+nation_pair[1]
+    state = p[:state]
+    if state == "Neutral"
+      data['alliances'].delete(key)
+    else
+      data['alliances'][key] = state
+    end
+
+    @game.save
+
+    respond_to do |format|
+      format.html{redirect_to human_control_path, notice: "#{state} between #{nation_pair}."}
+    end
+
   end
 
   # Administrative panel

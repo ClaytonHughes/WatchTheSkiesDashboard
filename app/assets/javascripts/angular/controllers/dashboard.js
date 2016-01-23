@@ -90,6 +90,9 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
         $scope.rioters = result['global_terror']['rioters'];
         $scope.minutes = result['timer']['minutes'];
         $scope.seconds = result['timer']['seconds'];
+        $scope.alliances = result['alliances'];
+        $scope.economy = result['economy'];
+        console.log($scope.economy);
 
         if (result['alien_comms'] == true) {
           $("body").addClass("alien");
@@ -153,6 +156,73 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
       return { "background-color": css_rgb(r_color) };
     };
 
+    $scope.colorFromAlliance = function(a, b) {
+      var debug = false
+      if (a == 'CN' && b == 'BR') { 
+        debug = true;
+      }
+      nations = [a,b].sort()
+      key = nations[0]+nations[1]
+      if (debug) {
+        console.log(key);
+        console.log($scope.alliances);
+      }
+      var color = undefined;
+      if ($scope.alliances !== undefined && key in $scope.alliances) {
+        stance = $scope.alliances[key];
+        if (stance === 'WAR') {
+          color = 'red';
+        } else {
+          color = 'lime';
+        }
+      }
+
+      if (color !== undefined) {
+        return { "background-color": color };
+      } else {
+        return {};
+      }
+    };
+
+
+    $scope.stock_display = function(nation_code, data) {
+      NATIONS = {'BR': 'BRAZIL',
+                 'CN': 'CHINA',
+                 'DE': 'GERMANY',
+                 'FR': 'FRANCE',
+                 'IN': 'INDIA',
+                 'JP': 'JAPAN',
+                 'RU': 'RUSSIA',
+                 'UK': 'UNITED KINGDOM',
+                 'US': 'UNITED STATES'}
+      var nation = NATIONS[nation_code];
+      var cur_val = ' (' + data["current"] + ') '
+      var arrows = ''
+
+      UP = "▲";
+      DOWN = "▼";
+      NOCHANGE = "━";
+
+      console.log(data);
+      change = data["change"];
+      if (change == 0) {
+        arrows = NOCHANGE;
+      } else {
+        while (change < 0) {
+          change += 1;
+          arrows += DOWN;
+        }
+        while (0 < change) {
+          change -= 1;
+          arrows += UP;
+        }
+      }
+
+      // not convinced I want to reveal cur_val:
+      cur_val = ' ';
+      return nation + cur_val + arrows;
+    }
+
     $scope.getStatus();
 
     $interval(function(){
@@ -181,8 +251,6 @@ dashboardApp.filter('filterCount', function() {
 // this should be built in, wtf
 dashboardApp.filter('fixedLen', function() {
   return function (n, len) {
-    console.log(n)
-    console.log(len)
     var num = parseInt(n, 10);
     len = parseInt(len, 10);
     if (isNaN(num) || isNaN(len)) {

@@ -57,6 +57,8 @@ class Api::ApiController < ApplicationController
           "seconds" => @data['seconds'],
           "paused" => @data['paused'],
         },
+        "alliances" => @data['alliances'],
+        "economy" => @data['economy'],
         "control_message" => @game.control_message,
         "news" =>  @news,
         "global_terror" => @global_terror,
