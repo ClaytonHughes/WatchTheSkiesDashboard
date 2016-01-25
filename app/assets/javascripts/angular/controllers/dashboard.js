@@ -224,9 +224,9 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
 
     $scope.getStatus();
 
-    $interval(function(){
+    /* $interval(function(){
       $scope.updateNews();
-    }, 8000);
+    }, 8000); */
 
     $interval(function() {
       $scope.getStatus();
