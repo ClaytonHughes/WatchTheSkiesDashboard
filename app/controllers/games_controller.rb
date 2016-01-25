@@ -75,7 +75,6 @@ before_action :authenticate_user!, except:[:dashboard]
   def set_alliance
     @game = Game.last
     data = @game.data
-    data['alliances'] = nil
     if data['alliances'].blank?
       data['alliances'] = {}
       data['alliances'][['BR','FR']] = 'WAR'

@@ -92,7 +92,6 @@ dashboardController.controller('DashboardCtrl', ['$rootScope', '$scope', '$http'
         $scope.seconds = result['timer']['seconds'];
         $scope.alliances = result['alliances'];
         $scope.economy = result['economy'];
-        console.log($scope.economy);
 
         if (result['alien_comms'] == true) {
           $("body").addClass("alien");
