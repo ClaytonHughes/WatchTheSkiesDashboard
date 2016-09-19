@@ -8,6 +8,32 @@ Dependencies are managed using Bundler.
 If you do not have Bundler:
   gem install bundler
 
+********************************
+* Welcome Back, beautiful
+*
+*
+* It's been months since you ran this shit, and you've got no idea what you're doing.
+* I'm here to help.
+*
+
+1. set up a brand new postgres db for this game; trust me, it's just easier this way
+    a. mkdir /usr/local/var/$something-unique
+    b. initdb /usr/local/var/$something-unique
+
+2. turn on the postgres db and configure it
+    a. pg_ctl -D /usr/local/var/postgres-pax start
+    b. bundle exec rake db:setup
+
+3. Launch rails
+    a. pf_fwd 80 3000
+    b. rails server --binding 0.0.0.0 --port 3000
+
+*
+* You can do all this as just sexy regular you. No need to su or sudo or any of that shit.
+*
+****
+
+
 The above is probably supposed to do something, but it likely doesn't. I also had to do the following:
 
 Then run the following to start the application:
